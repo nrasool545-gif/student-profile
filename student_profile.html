@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Profile</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f4f6fb; color: #1a1a1a; min-height: 100vh; }
+
+    header {
+      background: #1a56db;
+      color: #fff;
+      padding: 18px 32px;
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .container { max-width: 800px; margin: 32px auto; padding: 0 16px; }
+
+    /* Profile card */
+    .profile-card {
+      background: #fff;
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
+      padding: 28px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    .avatar {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: #dbeafe;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; font-weight: 600; color: #1d4ed8;
+      flex-shrink: 0;
+    }
+    .profile-name { font-size: 22px; font-weight: 600; color: #1a1a1a; }
+    .profile-meta { font-size: 14px; color: #64748b; margin-top: 4px; }
+    .badge {
+      display: inline-block; margin-top: 8px;
+      background: #dcfce7; color: #166534;
+      font-size: 12px; font-weight: 500;
+      padding: 3px 12px; border-radius: 20px;
+    }
+
+    /* Edit bar */
+    .edit-bar {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex; flex-wrap: wrap; gap: 10px;
+      margin-bottom: 24px;
+      align-items: center;
+    }
+    .edit-bar input, .edit-bar select {
+      flex: 1; min-width: 130px;
+      padding: 8px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 13px;
+      background: #f8fafc;
+      color: #1a1a1a;
+      outline: none;
+    }
+    .edit-bar input:focus, .edit-bar select:focus { border-color: #1a56db; }
+    .btn {
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: none;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-primary { background: #1a56db; color: #fff; }
+    .btn-primary:hover { background: #1648c0; }
+    .btn-secondary { background: #f1f5f9; color: #1a1a1a; border: 1px solid #cbd5e1; }
+    .btn-secondary:hover { background: #e2e8f0; }
+
+    /* Section label */
+    .section-label {
+      font-size: 12px; font-weight: 600;
+      color: #64748b; letter-spacing: 0.06em;
+      text-transform: uppercase; margin-bottom: 10px; margin-top: 20px;
+    }
+
+    /* Info card */
+    .info-card {
+      background: #fff; border: 1px solid #e2e8f0;
+      border-radius: 12px; padding: 4px 20px;
+      margin-bottom: 20px;
+    }
+    .info-row {
+      display: flex; justify-content: space-between;
+      align-items: center; padding: 11px 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 14px;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-key { color: #64748b; }
+    .info-val { font-weight: 500; color: #1a1a1a; }
+
+    /* Marks */
+    .avg-row { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+    .avg-card {
+      flex: 1; min-width: 110px;
+      background: #f8fafc;
+      border-radius: 10px; padding: 14px 16px;
+    }
+    .avg-label { font-size: 12px; color: #64748b; margin-bottom: 4px; }
+    .avg-val { font-size: 24px; font-weight: 600; color: #1a1a1a; }
+
+    .marks-card {
+      background: #fff; border: 1px solid #e2e8f0;
+      border-radius: 12px; padding: 8px 20px;
+      margin-bottom: 14px;
+    }
+    .subject-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 0; border-bottom: 1px solid #f1f5f9;
+    }
+    .subject-row:last-child { border-bottom: none; }
+    .subject-name { font-size: 14px; color: #1a1a1a; min-width: 150px; }
+    .bar-track {
+      flex: 1; background: #f1f5f9;
+      border-radius: 4px; height: 8px; overflow: hidden;
+    }
+    .bar-fill { height: 100%; border-radius: 4px; transition: width 0.4s; }
+    .mark-num { font-size: 14px; font-weight: 600; min-width: 36px; text-align: right; }
+    .grade-pill {
+      font-size: 12px; font-weight: 600;
+      padding: 2px 9px; border-radius: 20px;
+      min-width: 32px; text-align: center;
+    }
+    .del-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 16px; color: #94a3b8; padding: 0 4px;
+      line-height: 1;
+    }
+    .del-btn:hover { color: #e24b4a; }
+
+    /* Social */
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 10px; margin-bottom: 16px;
+    }
+    .social-btn {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 14px;
+      border: 1px solid #e2e8f0; border-radius: 10px;
+      background: #fff; text-decoration: none;
+      font-size: 13px; color: #1a1a1a;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .social-btn:hover { background: #f8fafc; border-color: #cbd5e1; }
+    .social-icon {
+      width: 32px; height: 32px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .social-info-name { font-weight: 500; font-size: 13px; }
+    .social-info-handle { font-size: 11px; color: #64748b; }
+
+    footer {
+      text-align: center; padding: 32px 0 16px;
+      font-size: 12px; color: #94a3b8;
+    }
+
+    @media (max-width: 540px) {
+      .profile-card { flex-direction: column; text-align: center; }
+      .avg-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<header>Student Profile</header>
+
+<div class="container">
+
+  <!-- Edit Profile -->
+  <div class="section-label">Edit profile</div>
+  <div class="edit-bar">
+    <input id="inp-name" placeholder="Student name" value="Aisha Rajan">
+    <input id="inp-college" placeholder="College name" value="Presidency College, Chennai">
+    <input id="inp-year" placeholder="Year / Department" value="2nd Year · Computer Science">
+    <button class="btn btn-primary" onclick="applyProfile()">Update profile</button>
+  </div>
+
+  <!-- Profile Card -->
+  <div class="profile-card">
+    <div class="avatar" id="avatarEl">AR</div>
+    <div>
+      <div class="profile-name" id="nameEl">Aisha Rajan</div>
+      <div class="profile-meta" id="collegeEl">Presidency College, Chennai</div>
+      <div class="profile-meta" id="yearEl">2nd Year · Computer Science</div>
+      <span class="badge">Active student</span>
+    </div>
+  </div>
+
+  <!-- Attendance -->
+  <div class="section-label">College attendance</div>
+  <div class="info-card">
+    <div class="info-row"><span class="info-key">Roll number</span><span class="info-val">CS2024-047</span></div>
+    <div class="info-row"><span class="info-key">Department</span><span class="info-val" id="deptEl">Computer Science</span></div>
+    <div class="info-row"><span class="info-key">Semester</span><span class="info-val">Semester 3</span></div>
+    <div class="info-row"><span class="info-key">Attendance</span><span class="info-val" style="color:#16a34a;">87% &nbsp;<span style="font-weight:400;font-size:12px;color:#64748b;">(present)</span></span></div>
+    <div class="info-row"><span class="info-key">Classes attended</span><span class="info-val">104 / 120</span></div>
+    <div class="info-row"><span class="info-key">Academic year</span><span class="info-val">2024 – 2025</span></div>
+  </div>
+
+  <!-- Exam Marks -->
+  <div class="section-label">Exam marks</div>
+  <div class="avg-row">
+    <div class="avg-card"><div class="avg-label">Average score</div><div class="avg-val" id="avgScore">—</div></div>
+    <div class="avg-card"><div class="avg-label">Highest subject</div><div class="avg-val" id="highSubj">—</div></div>
+    <div class="avg-card"><div class="avg-label">Overall grade</div><div class="avg-val" id="overallGrade">—</div></div>
+  </div>
+
+  <div class="marks-card" id="marksCard"></div>
+
+  <div class="edit-bar">
+    <input id="inp-subject" placeholder="Subject name">
+    <input id="inp-mark" placeholder="Mark (0–100)" type="number" min="0" max="100">
+    <button class="btn btn-primary" onclick="addSubject()">Add subject</button>
+  </div>
+
+  <!-- Social Media -->
+  <div class="section-label">Social media</div>
+  <div class="social-grid" id="socialGrid"></div>
+  <div class="edit-bar">
+    <select id="inp-platform">
+      <option>LinkedIn</option>
+      <option>GitHub</option>
+      <option>Instagram</option>
+      <option>Twitter / X</option>
+      <option>YouTube</option>
+    </select>
+    <input id="inp-handle" placeholder="@username or profile URL">
+    <button class="btn btn-primary" onclick="addSocial()">Add account</button>
+  </div>
+
+</div>
+
+<footer>Student Profile &copy; 2025</footer>
+
+<script>
+  const SUBJECTS = [
+    { name: "Data structures", mark: 82 },
+    { name: "DBMS", mark: 91 },
+    { name: "Operating systems", mark: 74 },
+    { name: "Mathematics III", mark: 68 },
+    { name: "Python programming", mark: 85 },
+  ];
+
+  const SOCIALS = [
+    { platform: "LinkedIn", handle: "aisha-rajan", color: "#0077B5" },
+    { platform: "GitHub", handle: "aisha-codes", color: "#24292e" },
+    { platform: "Instagram", handle: "@aisha.study", color: "#C13584" },
+  ];
+
+  const PLATFORM_COLORS = {
+    "LinkedIn": "#0077B5", "GitHub": "#24292e", "Instagram": "#C13584",
+    "Twitter / X": "#000000", "YouTube": "#FF0000"
+  };
+  const PLATFORM_LETTERS = {
+    "LinkedIn": "in", "GitHub": "GH", "Instagram": "IG",
+    "Twitter / X": "X", "YouTube": "YT"
+  };
+  const PLATFORM_URLS = {
+    "LinkedIn": "https://linkedin.com/in/",
+    "GitHub": "https://github.com/",
+    "Instagram": "https://instagram.com/",
+    "Twitter / X": "https://x.com/",
+    "YouTube": "https://youtube.com/@"
+  };
+
+  function gradeColor(m) {
+    if (m >= 90) return { bar: "#16a34a", text: "#14532d", bg: "#dcfce7" };
+    if (m >= 75) return { bar: "#1a56db", text: "#1e3a8a", bg: "#dbeafe" };
+    if (m >= 60) return { bar: "#d97706", text: "#78350f", bg: "#fef3c7" };
+    return { bar: "#dc2626", text: "#7f1d1d", bg: "#fee2e2" };
+  }
+  function gradeLabel(m) {
+    if (m >= 90) return "A+"; if (m >= 80) return "A";
+    if (m >= 70) return "B+"; if (m >= 60) return "B";
+    if (m >= 50) return "C"; return "F";
+  }
+
+  function renderMarks() {
+    const card = document.getElementById('marksCard');
+    card.innerHTML = '';
+    SUBJECTS.forEach((s, i) => {
+      const c = gradeColor(s.mark);
+      const row = document.createElement('div');
+      row.className = 'subject-row';
+      row.innerHTML = `
+        <span class="subject-name">${s.name}</span>
+        <div class="bar-track"><div class="bar-fill" style="width:${s.mark}%;background:${c.bar};"></div></div>
+        <span class="mark-num" style="color:${c.bar};">${s.mark}</span>
+        <span class="grade-pill" style="background:${c.bg};color:${c.text};">${gradeLabel(s.mark)}</span>
+        <button class="del-btn" onclick="deleteSubject(${i})" title="Remove">&#x2715;</button>`;
+      card.appendChild(row);
+    });
+    if (SUBJECTS.length === 0) {
+      card.innerHTML = '<p style="padding:14px 0;font-size:14px;color:#94a3b8;text-align:center;">No subjects added yet.</p>';
+      document.getElementById('avgScore').textContent = '—';
+      document.getElementById('highSubj').textContent = '—';
+      document.getElementById('overallGrade').textContent = '—';
+      return;
+    }
+    const avg = Math.round(SUBJECTS.reduce((a, s) => a + s.mark, 0) / SUBJECTS.length);
+    const high = SUBJECTS.reduce((a, s) => s.mark > a.mark ? s : a, SUBJECTS[0]);
+    document.getElementById('avgScore').textContent = avg + '%';
+    document.getElementById('highSubj').textContent = high.name;
+    document.getElementById('overallGrade').textContent = gradeLabel(avg);
+  }
+
+  function deleteSubject(i) {
+    SUBJECTS.splice(i, 1);
+    renderMarks();
+  }
+
+  function addSubject() {
+    const name = document.getElementById('inp-subject').value.trim();
+    const mark = parseInt(document.getElementById('inp-mark').value);
+    if (!name || isNaN(mark) || mark < 0 || mark > 100) {
+      alert('Please enter a subject name and a valid mark (0–100).');
+      return;
+    }
+    SUBJECTS.push({ name, mark });
+    document.getElementById('inp-subject').value = '';
+    document.getElementById('inp-mark').value = '';
+    renderMarks();
+  }
+
+  function renderSocials() {
+    const grid = document.getElementById('socialGrid');
+    grid.innerHTML = '';
+    SOCIALS.forEach((s, i) => {
+      const letter = PLATFORM_LETTERS[s.platform] || s.platform.slice(0,2).toUpperCase();
+      const baseUrl = PLATFORM_URLS[s.platform] || 'https://';
+      const handle = s.handle.replace(/^@/, '');
+      const href = s.handle.startsWith('http') ? s.handle : baseUrl + handle;
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'position:relative;';
+      wrap.innerHTML = `
+        <a class="social-btn" href="${href}" target="_blank">
+          <span class="social-icon" style="background:${s.color};">${letter}</span>
+          <span>
+            <div class="social-info-name">${s.platform}</div>
+            <div class="social-info-handle">${s.handle}</div>
+          </span>
+        </a>
+        <button onclick="deleteSocial(${i})" style="position:absolute;top:6px;right:8px;background:none;border:none;cursor:pointer;font-size:14px;color:#94a3b8;" title="Remove">&#x2715;</button>`;
+      grid.appendChild(wrap);
+    });
+    if (SOCIALS.length === 0) {
+      grid.innerHTML = '<p style="font-size:14px;color:#94a3b8;">No social accounts added yet.</p>';
+    }
+  }
+
+  function deleteSocial(i) {
+    SOCIALS.splice(i, 1);
+    renderSocials();
+  }
+
+  function addSocial() {
+    const platform = document.getElementById('inp-platform').value;
+    const handle = document.getElementById('inp-handle').value.trim();
+    if (!handle) { alert('Please enter a username or URL.'); return; }
+    SOCIALS.push({ platform, handle, color: PLATFORM_COLORS[platform] || '#555' });
+    document.getElementById('inp-handle').value = '';
+    renderSocials();
+  }
+
+  function applyProfile() {
+    const name = document.getElementById('inp-name').value.trim() || 'Student';
+    const college = document.getElementById('inp-college').value.trim();
+    const year = document.getElementById('inp-year').value.trim();
+    const initials = name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+    document.getElementById('avatarEl').textContent = initials;
+    document.getElementById('nameEl').textContent = name;
+    document.getElementById('collegeEl').textContent = college;
+    document.getElementById('yearEl').textContent = year;
+    const dept = year.includes('·') ? year.split('·')[1].trim() : year;
+    document.getElementById('deptEl').textContent = dept;
+  }
+
+  renderMarks();
+  renderSocials();
+</script>
+</body>
+</html>
